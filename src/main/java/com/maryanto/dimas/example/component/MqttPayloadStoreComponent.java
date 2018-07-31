@@ -16,11 +16,11 @@ public class MqttPayloadStoreComponent extends RouteBuilder {
     @Override
     public void configure() throws Exception {
         // subcribe topic : ruang/suhu -> qos : 2
-        from("mqtt:job-message-store-mqtt?subscribeTopicNames=ruang/suhu&willQos=ExactlyOnce")
+        from("mqtt:job-message-store-mqtt?subscribeTopicNames=ruang/suhu&qualityOfService=ExactlyOnce")
                 .routeId("ruang-suhu")
                 .group("job-message-store")
                 .tracing()
-                .log(LoggingLevel.INFO, "subcribe ${body}")
+                .log(LoggingLevel.INFO, "subcribed ${body}")
                 .process(exchange -> {
                     // convert byte[] to string json format
                     String jsonBodyString = new String((byte[]) exchange.getIn().getBody());
@@ -29,6 +29,8 @@ public class MqttPayloadStoreComponent extends RouteBuilder {
                     Suhu bodyConverted = new ObjectMapper().readValue(jsonBodyString, Suhu.class);
                     exchange.getIn().setBody(bodyConverted);
                 })
-                .to("bean:mqttStoreSuhuRepository?method=createStoreSuhu(${body})");
+                .log(LoggingLevel.INFO, "conversion to json: ${body}")
+                .to("bean:mqttStoreSuhuRepository?method=createStoreSuhu(${body})")
+                .log("${body}");
     }
 }
