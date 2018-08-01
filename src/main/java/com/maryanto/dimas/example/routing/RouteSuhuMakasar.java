@@ -28,14 +28,14 @@ public class RouteSuhuMakasar extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        // subcribe topic : ruang/suhu -> qos : 2
-        StringBuilder route = new StringBuilder("mqtt:location-makasar?subscribeTopicNames=ruang/suhu")
-                .append("&qualityOfService=ExactlyOnce")
-                .append("&host=").append(host)
-                .append("&userName=").append(userName)
-                .append("&password=").append(password);
-
-        from(route.toString())
+        from(
+                new MqttQueryBuilder(
+                        host,
+                        "location-makasar",
+                        userName,
+                        password,
+                        "ruang/suhu").toString()
+        )
                 .routeId("ruang-suhu-makasar")
                 .group("job-message-store")
                 .tracing()
