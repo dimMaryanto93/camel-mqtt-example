@@ -40,7 +40,7 @@ public class RouteSuhuBogor extends RouteBuilder {
                 .group("job-message-store")
                 .tracing()
                 .log(LoggingLevel.INFO, "subcribed ${body}")
-                .process(new SuhuConverterProcessor())
+                .process(new SuhuConverterProcessor(host))
                 .log(LoggingLevel.INFO, "conversion to json: ${body}")
                 .to("bean:mqttStoreSuhuRepository?method=createStoreSuhu(${body})")
                 .log("${body}");

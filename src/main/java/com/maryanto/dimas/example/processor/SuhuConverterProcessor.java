@@ -9,12 +9,18 @@ import org.slf4j.LoggerFactory;
 
 public class SuhuConverterProcessor implements Processor {
 
+    private final String location;
+
+    public SuhuConverterProcessor(String location) {
+        this.location = location;
+    }
+
     private static final Logger console = LoggerFactory.getLogger(SuhuConverterProcessor.class);
 
     @Override
     public void process(Exchange exchange) throws Exception {
         // log header info
-        console.info("headers: {}", exchange.getIn().getHeaders());
+        console.info("host from {} headers: {}", location, exchange.getIn().getHeaders());
         // convert byte[] to string json format
         String jsonBodyString = new String((byte[]) exchange.getIn().getBody());
         console.info("btye[] to string : {}", jsonBodyString);
